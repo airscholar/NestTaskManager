@@ -1,6 +1,6 @@
-### Objectives: Backend and Architecture
+# Objectives:
 
-====================
+## Backend and Architecture
 
 - Develop production-ready REST APIs
 - CRUD Operations
@@ -11,6 +11,29 @@
 - Configuration Management
 - Logging
 - Security and best practices
+
+## Persistence
+
+- Database connection
+- Relational database management using TypeORM
+- Handling complex queries using QueryBuilder
+- Database performance optimization
+
+## Autorization/Authentication
+
+- Sign up and sign in
+- Authentication and Authorization
+- Resource protection
+- Task Ownership by users
+- Of course, JWT Tokens handling
+- Hashing Passwords, Salt, storage
+
+## Deployment
+
+- Polishing the app
+- AWS Deployment
+- Front end deployment to Amazon S3
+- Wiring up the Front end and backend
 
 ## Installation
 
@@ -43,3 +66,5 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+Happy cracking 🤠!
