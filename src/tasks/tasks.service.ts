@@ -53,25 +53,23 @@ export class TasksService {
     return true;
   }
 
-  async findAll() {
-    return await this.taskRepository.find();
-  }
-
   async getTasksWithFilters(filterDto: TaskFilterDTO) {
     const { search, status } = filterDto;
 
-    let tasks = await this.findAll();
+    let query = this.taskRepository.createQueryBuilder('task');
 
     if (status) {
-      tasks = tasks.filter((task) => task.status === status);
+      query = query.andWhere('task.status = :status', { status });
     }
 
     if (search) {
-      tasks = tasks.filter(
-        (task) =>
-          task.title.includes(search) || task.description.includes(search),
+      query = query.andWhere(
+        'task.title LIKE :search OR task.description LIKE :search',
+        { search: `%${search}%` },
       );
     }
+
+    const tasks = await query.getMany();
 
     return tasks;
   }
@@ -102,14 +100,14 @@ export class TasksService {
 
     return existing_task;
   }
-  async updateStatus(id: number, status: TaskStatus) {
+  async updateStatus(id: number, status: string) {
     const existing_task = await this.getTaskById(id);
-    existing_task.status = status;
+    existing_task.status = TaskStatus[status];
     return await this.taskRepository.save(existing_task);
   }
 
   async remove(id: number) {
-    const existing_task = await this.getTaskById(id);
+    await this.getTaskById(id);
 
     await this.taskRepository.delete({ id });
 

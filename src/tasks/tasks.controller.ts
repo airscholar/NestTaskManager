@@ -10,6 +10,7 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { Task, TaskStatus } from './entities/task.entity';
@@ -22,9 +23,7 @@ export class TasksController {
 
   @Get()
   async findAll(@Query(ValidationPipe) taskFilterDTO: TaskFilterDTO) {
-    if (Object.keys(taskFilterDTO).length)
-      return await this.tasksService.getTasksWithFilters(taskFilterDTO);
-    return await this.tasksService.findAll();
+    return await this.tasksService.getTasksWithFilters(taskFilterDTO);
   }
 
   @UsePipes(new ValidationPipe())
@@ -46,10 +45,10 @@ export class TasksController {
 
   @Patch(':id/status')
   async updateStatus(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body('status', TaskStatusValidationPipe) status: TaskStatus,
   ) {
-    // return await this.tasksService.updateStatus(+id, status);
+    return await this.tasksService.updateStatus(+id, status);
   }
 
   @Delete(':id')

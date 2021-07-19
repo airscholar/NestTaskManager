@@ -16,6 +16,8 @@ export class TaskStatusValidationPipe implements PipeTransform {
         `"${value}" is an invalid status. Please try again!`,
       );
     }
+
+    return value;
   }
 
   private validateTaskStatus(status) {
