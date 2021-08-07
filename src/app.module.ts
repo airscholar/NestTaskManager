@@ -1,5 +1,5 @@
+import { AppConfigModule } from './config/config.module';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -12,10 +12,9 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forRoot(withCache),
     TasksModule,
     AuthModule,
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: '.env',
-    }),
+    // parses the .env file, assign key/value pairs to process.env, stores results in configService
+    // can set alternative .env file path
+    AppConfigModule,
   ],
   controllers: [AppController],
   providers: [AppService],

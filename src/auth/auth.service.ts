@@ -4,12 +4,14 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from './repository/user.repository';
 import { JwtService } from '@nestjs/jwt';
+import { AppConfigService } from 'src/config/config.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UserRepository) private userRepository: UserRepository,
     private jwtService: JwtService,
+    private appConfigService: AppConfigService,
   ) {}
 
   async signup(authCredentialsDTO: AuthCredentialsDTO) {

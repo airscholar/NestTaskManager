@@ -5,20 +5,20 @@ import { AuthService } from './auth.service';
 import { UserRepository } from './repository/user.repository';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
+import { jwtConstants } from './constants';
+import { AppConfigService } from 'src/config/config.service';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      signOptions: {
-        expiresIn: 3600,
-      },
-      secret: 'process.env.JWT_SECRET',
+      secret: jwtConstants.JWT_SECRET,
+      signOptions: { expiresIn: `${jwtConstants.JWT_EXP_TIME}s` }, // add this expiresIn value to the `jwtConstants` object
     }),
     TypeOrmModule.forFeature([UserRepository]),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, AppConfigService, ConfigService],
 })
 export class AuthModule {}

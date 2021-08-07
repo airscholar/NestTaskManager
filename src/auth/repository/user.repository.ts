@@ -6,9 +6,14 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
+import { AppConfigService } from 'src/config/config.service';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
+  constructor(private appConfigService: AppConfigService) {
+    super();
+  }
+
   async signup(authCredentialsDTO: AuthCredentialsDTO) {
     const { username, password } = authCredentialsDTO;
 
@@ -30,7 +35,6 @@ export class UserRepository extends Repository<User> {
   }
 
   async signin(authCredentialsDTO: AuthCredentialsDTO) {
-    console.log('TOKEN', process.env.JWT_TOKEN);
     return await this.checkUserPassword(authCredentialsDTO);
   }
 
