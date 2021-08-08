@@ -17,8 +17,8 @@ export class JWTStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payloadInput): Promise<User> {
-    const { username } = payloadInput.payload;
+  async validate(payloadInput) {
+    const { username } = payloadInput;
 
     const user = await this.userRepository.findOne({ username });
 
