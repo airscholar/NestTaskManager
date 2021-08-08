@@ -4,7 +4,12 @@ import { TaskStatus } from '../entities/task.entity';
 
 export class TaskFilterDTO {
   @Optional()
-  @IsIn([TaskStatus.OPEN, TaskStatus.IN_PROGRESS, TaskStatus.DONE])
+  @IsIn([
+    TaskStatus.OPEN,
+    TaskStatus.IN_PROGRESS,
+    TaskStatus.DONE,
+    TaskStatus.ALL,
+  ])
   status: TaskStatus;
   @Optional()
   search: string;

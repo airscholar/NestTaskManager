@@ -58,7 +58,7 @@ export class TasksService {
 
     let query = this.taskRepository.createQueryBuilder('task');
 
-    if (status) {
+    if (status && status !== TaskStatus.ALL) {
       query = query.andWhere('task.status = :status', { status });
     }
 
