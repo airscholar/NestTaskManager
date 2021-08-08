@@ -1,3 +1,4 @@
+import { JWTStrategy } from './jwt.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
@@ -19,6 +20,7 @@ import { AppConfigService } from 'src/config/config.service';
     TypeOrmModule.forFeature([UserRepository]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AppConfigService, ConfigService],
+  providers: [AuthService, AppConfigService, ConfigService, JWTStrategy],
+  exports: [JWTStrategy, PassportModule],
 })
 export class AuthModule {}

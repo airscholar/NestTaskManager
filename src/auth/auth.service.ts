@@ -1,4 +1,3 @@
-import { JwtPayload } from './interface/jwt-payload.interface';
 import { AuthCredentialsDTO } from './dto/auth-credentials.dto';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,8 +23,10 @@ export class AuthService {
       throw new UnauthorizedException({ message: 'Invalid credentials' });
     }
 
-    const payload: JwtPayload = { username: response.username };
-    const accessToken = await this.jwtService.sign({ payload });
+    // const payload = response.username;
+    const accessToken = await this.jwtService.sign({
+      username: response.username,
+    });
 
     return {
       message: 'User Logged In Successfully!',
