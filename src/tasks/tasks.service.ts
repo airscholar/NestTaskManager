@@ -10,6 +10,7 @@ import { validate } from 'class-validator';
 import { Repository } from 'typeorm';
 import { CreateTaskDTO } from './dto/create-task.dto';
 import { Task, TaskStatus } from './entities/task.entity';
+import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class TasksService {
@@ -17,7 +18,7 @@ export class TasksService {
     @InjectRepository(Task) private readonly taskRepository: Repository<Task>,
   ) {}
 
-  async create(createTaskDto: CreateTaskDTO): Promise<Task> {
+  async create(createTaskDto: CreateTaskDTO, user: User): Promise<Task> {
     const validationResult = await this.validateInput(createTaskDto);
 
     if (validationResult) {
@@ -36,8 +37,12 @@ export class TasksService {
       task.title = title;
       task.description = description;
       task.status = status;
+      task.user = user;
 
-      return await this.taskRepository.save(task);
+      await this.taskRepository.save(task);
+
+      delete task.user;
+      return task;
     }
   }
 
@@ -53,10 +58,12 @@ export class TasksService {
     return true;
   }
 
-  async getTasksWithFilters(filterDto: TaskFilterDTO) {
+  async getTasksWithFilters(filterDto: TaskFilterDTO, user: User) {
     const { search, status } = filterDto;
 
     let query = this.taskRepository.createQueryBuilder('task');
+
+    query.andWhere('task.userId = :userId', { userId: user.id });
 
     if (status && status !== TaskStatus.ALL) {
       query = query.andWhere('task.status = :status', { status });
@@ -74,14 +81,19 @@ export class TasksService {
     return tasks;
   }
 
-  async findOne(id: number) {
-    return await this.taskRepository.findOne({ id });
+  async findOne(id: number, user: User) {
+    return await this.taskRepository.findOne({
+      where: {
+        id,
+        userId: user.id,
+      },
+    });
   }
 
-  async update(id: number, updateTaskDto: Task) {
+  async update(id: number, updateTaskDto: Task, user: User) {
     const validationResult = await this.validateInput(updateTaskDto);
     if (validationResult) {
-      const existing_task = await this.getTaskById(id);
+      const existing_task = await this.getTaskById(id, user);
 
       const updated_task = Object.assign(existing_task, updateTaskDto);
 
@@ -89,9 +101,12 @@ export class TasksService {
     }
   }
 
-  private async getTaskById(id: number) {
+  private async getTaskById(id: number, user: User) {
     const existing_task = await this.taskRepository.findOne({
-      id,
+      where: {
+        id,
+        userId: user.id,
+      },
     });
 
     if (!existing_task) {
@@ -100,14 +115,14 @@ export class TasksService {
 
     return existing_task;
   }
-  async updateStatus(id: number, status: string) {
-    const existing_task = await this.getTaskById(id);
+  async updateStatus(id: number, status: string, user: User) {
+    const existing_task = await this.getTaskById(id, user);
     existing_task.status = TaskStatus[status];
     return await this.taskRepository.save(existing_task);
   }
 
-  async remove(id: number) {
-    await this.getTaskById(id);
+  async remove(id: number, user: User) {
+    await this.getTaskById(id, user);
 
     await this.taskRepository.delete({ id });
 
