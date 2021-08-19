@@ -25,7 +25,7 @@ export class TasksService {
   }
 
   async findOne(id: number, user: User) {
-    return await this.taskRepository.findOneTask(id, user);
+    return await this.taskRepository.getTaskById(id, user);
   }
 
   async update(id: number, updateTaskDto: Task, user: User) {
@@ -33,7 +33,7 @@ export class TasksService {
   }
 
   private async getTaskById(id: number, user: User) {
-    return await this.taskRepository.findOneTask(id, user);
+    return await this.taskRepository.getTaskById(id, user);
   }
   async updateStatus(id: number, status: string, user: User) {
     const existing_task = await this.getTaskById(id, user);

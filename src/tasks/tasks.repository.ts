@@ -71,15 +71,6 @@ export class TaskRepository extends Repository<Task> {
     return tasks;
   }
 
-  async findOneTask(id: number, user: User) {
-    return await this.findOne({
-      where: {
-        id,
-        user: user.id,
-      },
-    });
-  }
-
   async updateTask(id: number, updateTaskDto: Task, user: User) {
     const validationResult = await this.validateInput(updateTaskDto);
     if (validationResult) {
@@ -91,11 +82,11 @@ export class TaskRepository extends Repository<Task> {
     }
   }
 
-  private async getTaskById(id: number, user: User) {
+  async getTaskById(id: number, user: User) {
     const existing_task = await this.findOne({
       where: {
         id,
-        userId: user.id,
+        user: user.id,
       },
     });
 
