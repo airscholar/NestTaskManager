@@ -1,18 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Repository } from 'typeorm';
+import { Task } from './entities/task.entity';
 import { TasksService } from './tasks.service';
 
+const mockTestRepository = () => ({
+
+)};
+
 describe('TasksService', () => {
-  let service: TasksService;
+  let tasksService: TasksService;
+  let taskRepository: Repository<Task>;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [TasksService],
+    const module = await Test.createTestingModule({
+      providers: [
+        TasksService, 
+        { provide: taskRepository, useFactory: mockTestRepository}
+      ],
     }).compile();
 
-    service = module.get<TasksService>(TasksService);
-  });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+    tasksService = await module.get<TasksService>(TasksService);
   });
 });

@@ -37,7 +37,7 @@ export class TasksController {
   @UsePipes(new ValidationPipe())
   @Post()
   async create(@Body() createTaskDto: CreateTaskDTO, @GetUser() user: User) {
-    return await this.tasksService.create(createTaskDto, user);
+    return await this.tasksService.createTask(createTaskDto, user);
   }
 
   @Get(':id')
